@@ -1,38 +1,53 @@
 /// <reference types="cypress" />
 
 describe('Article flow', () => {
-  const timestamp = Date.now();
-  const title = `Test Article ${timestamp}`;
-  const description = `Description ${timestamp}`;
-  const body = `Body content ${timestamp}`;
-  const tag = 'TestTag';
-
-  before(() => {
-    // logowanie przed testami
-    cy.login(Cypress.env('USER_EMAIL'), Cypress.env('USER_PASSWORD'));
-  });
-
   it('should create a new article', () => {
-    // tworzymy artykuł
+    const timestamp = Date.now();
+    const email = `user${timestamp}@mail.com`;
+    const password = `Password${timestamp}!`;
+    const username = `User${timestamp}`;
+
+    const title = `Test Article ${timestamp}`;
+    const description = `Description ${timestamp}`;
+    const body = `Body content ${timestamp}`;
+    const tag = 'TestTag';
+
+    // Tworzymy nowego użytkownika i logujemy się
+    cy.register(username, email, password);
+    cy.login(email, password);
+
+    // Tworzymy artykuł
     cy.createArticle(title, description, body, [tag]);
 
-    // asercje po utworzeniu
+    // Assercje
     cy.contains(title).should('be.visible');
     cy.contains(description).should('be.visible');
     cy.get('.tag-list').contains(tag).should('be.visible');
   });
 
   it('should delete an article', () => {
-    // tworzymy artykuł do usunięcia
+    const timestamp = Date.now();
+    const email = `user${timestamp}@mail.com`;
+    const password = `Password${timestamp}!`;
+    const username = `User${timestamp}`;
+
+    const title = `Test Article ${timestamp}`;
+    const description = `Description ${timestamp}`;
+    const body = `Body content ${timestamp}`;
+    const tag = 'TestTag';
+
+    // Tworzymy nowego użytkownika i logujemy się
+    cy.register(username, email, password);
+    cy.login(email, password);
+
+    // Tworzymy artykuł do usunięcia
     cy.createArticle(title, description, body, [tag]);
 
-    // otwieramy artykuł
+    // Usuwamy artykuł
     cy.contains(title).click();
-
-    // klikamy Delete Article
     cy.contains('Delete Article').click();
 
-    // asercja, że artykuł został usunięty
+    // Assercja po usunięciu
     cy.contains(title).should('not.exist');
   });
 });
