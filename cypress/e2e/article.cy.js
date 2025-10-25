@@ -12,14 +12,22 @@ describe('Article flow', () => {
     const body = `Body content ${timestamp}`;
     const tag = 'TestTag';
 
-    // Tworzymy nowego użytkownika i logujemy się
-    cy.register(username, email, password);
+    // Tworzenie użytkownika przez API
+    cy.request({
+      method: 'POST',
+      url: 'https://conduit.mate.academy/api/users',
+      body: {
+        user: { username, email, password },
+      },
+    });
+
+    // Logowanie
     cy.login(email, password);
 
-    // Tworzymy artykuł
+    // Tworzenie artykułu
     cy.createArticle(title, description, body, [tag]);
 
-    // Assercje
+    // Assercje po utworzeniu
     cy.contains(title).should('be.visible');
     cy.contains(description).should('be.visible');
     cy.get('.tag-list').contains(tag).should('be.visible');
@@ -36,18 +44,28 @@ describe('Article flow', () => {
     const body = `Body content ${timestamp}`;
     const tag = 'TestTag';
 
-    // Tworzymy nowego użytkownika i logujemy się
-    cy.register(username, email, password);
+    // Tworzenie użytkownika przez API
+    cy.request({
+      method: 'POST',
+      url: 'https://conduit.mate.academy/api/users',
+      body: {
+        user: { username, email, password },
+      },
+    });
+
+    // Logowanie
     cy.login(email, password);
 
     // Tworzymy artykuł do usunięcia
     cy.createArticle(title, description, body, [tag]);
 
-    // Usuwamy artykuł
+    // Przechodzimy do artykułu
     cy.contains(title).click();
+
+    // Usuwamy artykuł
     cy.contains('Delete Article').click();
 
-    // Assercja po usunięciu
+    // Assercja, że artykuł został usunięty
     cy.contains(title).should('not.exist');
   });
 });
